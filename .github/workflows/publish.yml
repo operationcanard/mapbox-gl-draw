@@ -1,0 +1,39 @@
+name: Publish
+
+# Only runs on master
+
+on: [workflow_dispatch]
+
+permissions:
+  contents: write # for checkout and tag
+  pull-requests: write # for comments
+  packages: write # for publish
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/master'
+    name: Publish
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - name: Git Identity
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Access git npm repository
+        run: |
+          touch .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          @operationcanard:registry=https://npm.pkg.github.com
+          always-auth=true" >> .npmrc
+      - name: Install
+        run: npm install
+      - name: Build
+        run: npm run prepublish
+      - name: Publish
+        run: npm publish
