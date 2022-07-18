@@ -31,9 +31,6 @@
     "start-server": "node server.js",
     "start": "run-p build-token watch watch-bench start-server"
   },
-  "files": [
-    "dist/mapbox-gl-draw*"
-  ],
   "repository": "git@github.com:operationcanard/mapbox-gl-draw.git",
   "keywords": [
     "webgl",
