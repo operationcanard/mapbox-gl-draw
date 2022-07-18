@@ -34,7 +34,7 @@
   "files": [
     "dist/mapbox-gl-draw*"
   ],
-  "repository":"git@github.com:operationcanard/mapbox-gl-draw.git",
+  "repository": "git@github.com:operationcanard/mapbox-gl-draw.git",
   "keywords": [
     "webgl",
     "mapbox",
