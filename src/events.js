@@ -126,8 +126,14 @@ export default function(ctx) {
   // 46 - Delete
   const isKeyModeValid = code => !(code === 8 || code === 46 || (code >= 48 && code <= 57));
 
+  const mapCanvasSelectors = ['mapboxgl-canvas', 'maplibregl-canvas'];
+
+  function isClassListContainingMapSelector(classList) {
+    return Array.from(classList).some(className => mapCanvasSelectors.includes(className));
+  }
+
   events.keydown = function(event) {
-    if ((event.srcElement || event.target).classList[0] !== 'mapboxgl-canvas') return; // we only handle events on the map
+    if (!isClassListContainingMapSelector((event.srcElement || event.target).classList)) return; // we only handle events on the map
 
     if ((event.keyCode === 8 || event.keyCode === 46) && ctx.options.controls.trash) {
       event.preventDefault();
