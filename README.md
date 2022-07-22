@@ -131,3 +131,13 @@ We're trying to follow standards when naming things. Here is a collection of lin
 
 - https://turfjs.org
 - https://shapely.readthedocs.io/en/latest/manual.html
+
+
+### Testing live in pluggable mapbox draw
+- install yalc globally on your machine
+- In mapbox-gl-draw
+  - Run `npm run initialize`
+  - Run `npm run yalc-watch`
+- In pluggable-mapbox-draw
+  - Run `yalc link @operationcanard/mapbox-gl-draw`
+  - Run the sandbox
