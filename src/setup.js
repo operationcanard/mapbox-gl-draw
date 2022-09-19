@@ -4,7 +4,8 @@ import ui from './ui';
 import * as Constants from './constants';
 import xtend from 'xtend';
 
-export default function(ctx) {
+export default function (ctx) {
+  ctx.events = events(ctx);
 
   let controlContainer = null;
   let mapLoadedInterval = null;
@@ -41,7 +42,7 @@ export default function(ctx) {
         // Monkey patch to resolve breaking change to `fire` introduced by
         // mapbox-gl-js. See mapbox/mapbox-gl-draw/issues/766.
         const _fire = map.fire;
-        map.fire = function(type, event) {
+        map.fire = function (type, event) {
           // eslint-disable-next-line
           let args = arguments;
 
