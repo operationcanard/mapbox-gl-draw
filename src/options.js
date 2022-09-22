@@ -15,7 +15,8 @@ const defaultOptions = {
   styles,
   modes,
   controls: {},
-  userProperties: false
+  userProperties: false,
+  showToolbar: true,
 };
 
 const showControls = {

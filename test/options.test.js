@@ -9,6 +9,7 @@ test('Options test', (t) => {
     const Draw = new MapboxDraw();
     const defaultOptions = {
       defaultMode: 'simple_select',
+      showToolbar: true,
       modes,
       touchEnabled: true,
       keybindings: true,
@@ -37,6 +38,7 @@ test('Options test', (t) => {
     const defaultOptions = {
       defaultMode: 'simple_select',
       modes,
+      showToolbar: true,
       keybindings: true,
       touchEnabled: true,
       clickBuffer: 10,
@@ -64,6 +66,7 @@ test('Options test', (t) => {
     const defaultOptions = {
       defaultMode: 'simple_select',
       modes,
+      showToolbar: true,
       keybindings: true,
       touchEnabled: true,
       clickBuffer: 2,
@@ -90,6 +93,7 @@ test('Options test', (t) => {
     const defaultOptions = {
       defaultMode: 'simple_select',
       modes,
+      showToolbar: true,
       keybindings: true,
       touchEnabled: true,
       displayControlsDefault: false,
@@ -117,6 +121,7 @@ test('Options test', (t) => {
     const defaultOptions = {
       defaultMode: 'simple_select',
       modes,
+      showToolbar: true,
       keybindings: true,
       touchEnabled: true,
       displayControlsDefault: true,
@@ -144,6 +149,7 @@ test('Options test', (t) => {
     const defaultOptions = {
       defaultMode: 'simple_select',
       modes,
+      showToolbar: true,
       touchEnabled: false,
       keybindings: true,
       clickBuffer: 2,

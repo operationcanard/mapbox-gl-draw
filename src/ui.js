@@ -99,11 +99,12 @@ export default function(ctx) {
   }
 
   function addButtons() {
-    const controls = ctx.options.controls;
+    const { controls, showToolbar = true } = ctx.options;
+
     const controlGroup = document.createElement('div');
     controlGroup.className = `${Constants.classes.CONTROL_GROUP} ${Constants.classes.CONTROL_BASE}`;
 
-    if (!controls) return controlGroup;
+    if (!controls || !showToolbar) return controlGroup;
 
     if (controls[Constants.types.LINE]) {
       buttonElements[Constants.types.LINE] = createControlButton(Constants.types.LINE, {
