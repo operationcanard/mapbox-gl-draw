@@ -6,6 +6,8 @@ import createVertex from '../lib/create_vertex';
 
 const DrawLineString = {};
 
+DrawLineString.shortcuts = [{key: 'l'}];
+
 DrawLineString.onSetup = function(opts) {
   opts = opts || {};
   const featureId = opts.featureId;

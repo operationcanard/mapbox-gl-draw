@@ -2,6 +2,7 @@ import * as CommonSelectors from '../lib/common_selectors';
 import * as Constants from '../constants';
 
 const DrawPoint = {};
+DrawPoint.shortcuts = [{key: 'd'}];
 
 DrawPoint.onSetup = function() {
   const point = this.newFeature({

@@ -8,6 +8,8 @@ import * as Constants from '../constants';
 
 const SimpleSelect = {};
 
+SimpleSelect.shortcuts = [{key: 's'}];
+
 SimpleSelect.onSetup = function(opts) {
   // turn the opts into state.
   const state = {
