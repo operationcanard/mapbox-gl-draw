@@ -120,6 +120,12 @@ SimpleSelect.onMouseOut = function(state) {
 };
 
 SimpleSelect.onTap = SimpleSelect.onClick = function(state, e) {
+  const isLeftClick = e.originalEvent.button === 0;
+  const isRightClick = e.originalEvent.button === 2;
+
+  // Prevent from selecting features with other clicks than left clicks
+  if (!isLeftClick && (isRightClick && this.getSelected().length >= 2)) return;
+
   // Click (with or without shift) on no feature
   if (CommonSelectors.noTarget(e)) return this.clickAnywhere(state, e); // also tap
   if (CommonSelectors.isOfMetaType(Constants.meta.VERTEX)(e)) return this.clickOnVertex(state, e); //tap

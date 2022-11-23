@@ -12,6 +12,17 @@ const DirectSelect = {};
 
 // INTERNAL FUCNTIONS
 
+DirectSelect.shouldSelect = function(e) {
+
+  const isLeftClick = e.originalEvent.button === 0;
+  const isRightClick = e.originalEvent.button === 2;
+
+  // Prevent from selecting features with other clicks than left clicks
+  if (!isLeftClick && (isRightClick && this.getSelected().length >= 2)) return false;
+
+  return true;
+};
+
 DirectSelect.fireUpdate = function() {
   this.map.fire(Constants.events.UPDATE, {
     action: Constants.updateActions.CHANGE_COORDINATES,
@@ -223,6 +234,8 @@ DirectSelect.onDrag = function(state, e) {
 };
 
 DirectSelect.onClick = function(state, e) {
+  if (!this.shouldSelect(e)) return;
+
   if (noTarget(e)) return this.clickNoTarget(state, e);
   if (isActiveFeature(e)) return this.clickActiveFeature(state, e);
   if (isInactiveFeature(e)) return this.clickInactive(state, e);
@@ -230,6 +243,8 @@ DirectSelect.onClick = function(state, e) {
 };
 
 DirectSelect.onTap = function(state, e) {
+  if (!this.shouldSelect(e)) return;
+
   if (noTarget(e)) return this.clickNoTarget(state, e);
   if (isActiveFeature(e)) return this.clickActiveFeature(state, e);
   if (isInactiveFeature(e)) return this.clickInactive(state, e);
