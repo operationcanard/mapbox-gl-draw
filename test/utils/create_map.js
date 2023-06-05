@@ -1,12 +1,16 @@
-import mapboxgl from 'mapbox-gl-js-mock';
-import { interactions } from '../../src/constants';
+import mapboxgl from "mapbox-gl-js-mock";
+import { interactions } from "../../src/constants";
 
 export default function createMap(mapOptions = {}) {
-
-  const map = new mapboxgl.Map(Object.assign({
-    container: document.createElement('div'),
-    style: 'mapbox://styles/mapbox/streets-v8'
-  }, mapOptions));
+  const map = new mapboxgl.Map(
+    Object.assign(
+      {
+        container: document.createElement("div"),
+        style: "mapbox://styles/mapbox/streets-v8",
+      },
+      mapOptions
+    )
+  );
   // Some mock project/unproject functions
   map.project = ([y, x]) => ({ x, y });
   map.unproject = ([x, y]) => ({ lng: y, lat: x });
@@ -18,46 +22,52 @@ export default function createMap(mapOptions = {}) {
   interactions.forEach((interaction) => {
     map[interaction] = {
       enabled: true,
-      disable () { this.enabled = false; },
-      enable () { this.enabled = true; },
-      isEnabled () { return this.enabled; },
+      disable() {
+        this.enabled = false;
+      },
+      enable() {
+        this.enabled = true;
+      },
+      isEnabled() {
+        return this.enabled;
+      },
     };
   });
 
-  map.getCanvas = function() {
+  map.getCanvas = function () {
     return map.getContainer();
   };
 
   let classList = [];
   const container = map.getContainer();
-  container.classList.add = function(names) {
-    names = names || '';
-    names.split(' ').forEach((name) => {
+  container.classList.add = function (names) {
+    names = names || "";
+    names.split(" ").forEach((name) => {
       if (classList.indexOf(name) === -1) {
         classList.push(name);
       }
     });
-    container.className = classList.join(' ');
+    container.className = classList.join(" ");
   };
 
-  container.classList.remove = function(names) {
-    names = names || '';
-    names.split(' ').forEach((name) => {
-      classList = classList.filter(n => n !== name);
+  container.classList.remove = function (names) {
+    names = names || "";
+    names.split(" ").forEach((name) => {
+      classList = classList.filter((n) => n !== name);
     });
-    container.className = classList.join(' ');
+    container.className = classList.join(" ");
   };
 
-  container.className = classList.join(' ');
+  container.className = classList.join(" ");
 
-  container.getBoundingClientRect = function() {
+  container.getBoundingClientRect = function () {
     return {
       left: 0,
-      top: 0
+      top: 0,
     };
   };
 
-  map.getContainer = function() {
+  map.getContainer = function () {
     return container;
   };
 

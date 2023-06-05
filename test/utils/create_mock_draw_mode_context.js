@@ -1,4 +1,4 @@
-import spy from 'sinon/lib/sinon/spy'; // avoid babel-register-related error by importing only spy
+import spy from "sinon/lib/sinon/spy"; // avoid babel-register-related error by importing only spy
 
 export default function createMockDrawModeContext() {
   const _store = {};
@@ -18,29 +18,29 @@ export default function createMockDrawModeContext() {
       },
       get(id) {
         return _store[id];
-      }
+      },
     },
     events: {
       changeMode: spy(),
-      actionable: spy()
+      actionable: spy(),
     },
     ui: {
       queueMapClasses: spy(),
-      setActiveButton: spy()
+      setActiveButton: spy(),
     },
     map: {
       doubleClickZoom: {
         disable: spy(),
-        enable: spy()
+        enable: spy(),
       },
-      fire: spy()
+      fire: spy(),
     },
-    _test: {}
+    _test: {},
   };
 
-  spy(api.store, 'add');
-  spy(api.store, 'delete');
-  spy(api.store, 'get');
+  spy(api.store, "add");
+  spy(api.store, "delete");
+  spy(api.store, "get");
 
   return api;
 }

@@ -1,14 +1,14 @@
-import runSetup from './src/setup';
-import setupOptions from './src/options';
-import setupAPI from './src/api';
-import theme from './src/lib/theme';
-import * as Constants from './src/constants';
+import runSetup from "./src/setup";
+import setupOptions from "./src/options";
+import setupAPI from "./src/api";
+import theme from "./src/lib/theme";
+import * as Constants from "./src/constants";
 
-const setupDraw = function(options, api) {
+const setupDraw = function (options, api) {
   options = setupOptions(options);
 
   const ctx = {
-    options
+    options,
   };
 
   api = setupAPI(ctx, api);
@@ -28,7 +28,7 @@ function MapboxDraw(options) {
   setupDraw(options, this);
 }
 
-import modes from './src/modes/index';
+import modes from "./src/modes/index";
 MapboxDraw.modes = modes;
 MapboxDraw.theme = theme;
 

@@ -1,6 +1,4 @@
-
-const ModeHandler = function(mode, DrawContext) {
-
+const ModeHandler = function (mode, DrawContext) {
   const handlers = {
     drag: [],
     click: [],
@@ -13,7 +11,7 @@ const ModeHandler = function(mode, DrawContext) {
     touchstart: [],
     touchmove: [],
     touchend: [],
-    tap: []
+    tap: [],
   };
 
   const ctx = {
@@ -23,12 +21,12 @@ const ModeHandler = function(mode, DrawContext) {
       }
       handlers[event].push({
         selector,
-        fn
+        fn,
       });
     },
     render(id) {
       DrawContext.store.featureChanged(id);
-    }
+    },
   };
 
   const delegate = function (eventName, event) {
@@ -75,41 +73,41 @@ const ModeHandler = function(mode, DrawContext) {
       }
     },
     drag(event) {
-      delegate('drag', event);
+      delegate("drag", event);
     },
     click(event) {
-      delegate('click', event);
+      delegate("click", event);
     },
     mousemove(event) {
-      delegate('mousemove', event);
+      delegate("mousemove", event);
     },
     mousedown(event) {
-      delegate('mousedown', event);
+      delegate("mousedown", event);
     },
     mouseup(event) {
-      delegate('mouseup', event);
+      delegate("mouseup", event);
     },
     mouseout(event) {
-      delegate('mouseout', event);
+      delegate("mouseout", event);
     },
     keydown(event) {
-      delegate('keydown', event);
+      delegate("keydown", event);
     },
     keyup(event) {
-      delegate('keyup', event);
+      delegate("keyup", event);
     },
     touchstart(event) {
-      delegate('touchstart', event);
+      delegate("touchstart", event);
     },
     touchmove(event) {
-      delegate('touchmove', event);
+      delegate("touchmove", event);
     },
     touchend(event) {
-      delegate('touchend', event);
+      delegate("touchend", event);
     },
     tap(event) {
-      delegate('tap', event);
-    }
+      delegate("tap", event);
+    },
   };
 };
 

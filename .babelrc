@@ -3,9 +3,7 @@
   "env": {
     "test": {
       "sourceMaps": "inline",
-      "plugins": [
-        "istanbul"
-      ]
+      "plugins": ["istanbul"]
     }
   }
 }

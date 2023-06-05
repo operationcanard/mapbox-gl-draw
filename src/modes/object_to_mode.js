@@ -1,26 +1,26 @@
-import ModeInterface from './mode_interface';
+import ModeInterface from "./mode_interface";
 
 const eventMapper = {
-  drag: 'onDrag',
-  click: 'onClick',
-  mousemove: 'onMouseMove',
-  mousedown: 'onMouseDown',
-  mouseup: 'onMouseUp',
-  mouseout: 'onMouseOut',
-  keyup: 'onKeyUp',
-  keydown: 'onKeyDown',
-  touchstart: 'onTouchStart',
-  touchmove: 'onTouchMove',
-  touchend: 'onTouchEnd',
-  tap: 'onTap'
+  drag: "onDrag",
+  click: "onClick",
+  mousemove: "onMouseMove",
+  mousedown: "onMouseDown",
+  mouseup: "onMouseUp",
+  mouseout: "onMouseOut",
+  keyup: "onKeyUp",
+  keydown: "onKeyDown",
+  touchstart: "onTouchStart",
+  touchmove: "onTouchMove",
+  touchend: "onTouchEnd",
+  tap: "onTap",
 };
 
 const eventKeys = Object.keys(eventMapper);
 
-export default function(modeObject) {
+export default function (modeObject) {
   const modeObjectKeys = Object.keys(modeObject);
 
-  return function(ctx, startOpts = {}) {
+  return function (ctx, startOpts = {}) {
     let state = {};
 
     const mode = modeObjectKeys.reduce((m, k) => {
@@ -29,7 +29,7 @@ export default function(modeObject) {
     }, new ModeInterface(ctx));
 
     function wrapper(eh) {
-      return e => mode[eh](state, e);
+      return (e) => mode[eh](state, e);
     }
 
     return {
@@ -49,7 +49,6 @@ export default function(modeObject) {
           }
           this.on(key, selector, wrapper(modeHandler));
         });
-
       },
       stop() {
         mode.onStop(state);
@@ -65,7 +64,7 @@ export default function(modeObject) {
       },
       render(geojson, push) {
         mode.toDisplayFeatures(state, geojson, push);
-      }
+      },
     };
   };
 }
