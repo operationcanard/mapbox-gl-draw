@@ -156,15 +156,7 @@ export default function (ctx) {
       ctx.options.controls.trash
     ) {
       event.preventDefault();
-      if (ctx.options.deleteConfirmFunction) {
-        Promise.resolve(ctx.options.deleteConfirmFunction())
-          .then((result) => {
-            if (result) currentMode.trash();
-          })
-          .catch(() => {
-            // do nothing
-          });
-      }
+      currentMode.trash();
     } else if (isKeyModeValid(event.keyCode)) {
       currentMode.keydown(event);
     } else if (event.keyCode === 49 && ctx.options.controls.point) {

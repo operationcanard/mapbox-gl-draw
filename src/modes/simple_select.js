@@ -329,9 +329,28 @@ SimpleSelect.toDisplayFeatures = function (state, geojson, display) {
   createSupplementaryPoints(geojson).forEach(display);
 };
 
-SimpleSelect.onTrash = function () {
-  this.deleteFeature(this.getSelectedIds());
-  this.fireActionable();
+SimpleSelect.onTrash = function (_, options) {
+  const { deleteConfirmFunction } = options;
+
+  const deleteFeatures = () => {
+    this.deleteFeature(this.getSelectedIds());
+    this.fireActionable();
+    this.changeMode(Constants.modes.SIMPLE_SELECT, {});
+  };
+  if (deleteConfirmFunction) {
+    return Promise.resolve(deleteConfirmFunction())
+      .then((result) => {
+        if (result) {
+          deleteFeatures();
+        }
+        return result;
+      })
+      .catch(() => {
+        // do nothing
+      });
+  } else {
+    deleteFeatures();
+  }
 };
 
 SimpleSelect.onCombineFeatures = function () {

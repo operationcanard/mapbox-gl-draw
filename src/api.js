@@ -133,24 +133,31 @@ export default function (ctx, api) {
     };
   };
 
-  api.delete = function (featureIds, options = { silent: true }) {
-    if (ctx.options.deleteConfirmFunction) {
+  api.delete = function (
+    featureIds,
+    options = { silent: true, useConfirmFunction: false }
+  ) {
+    const deleteFeatures = () => {
+      ctx.store.delete(featureIds, options);
+      // If we were in direct select mode and our selected feature no longer exists
+      // (because it was deleted), we need to get out of that mode.
+      if (
+        api.getMode() === Constants.modes.DIRECT_SELECT &&
+        !ctx.store.getSelectedIds().length
+      ) {
+        ctx.events.changeMode(Constants.modes.SIMPLE_SELECT, undefined, {
+          silent: true,
+        });
+      } else {
+        ctx.store.render();
+      }
+    };
+
+    if (options.useConfirmFunction && ctx.options.deleteConfirmFunction) {
       return Promise.resolve(ctx.options.deleteConfirmFunction())
         .then((result) => {
           if (result) {
-            ctx.store.delete(featureIds, options);
-            // If we were in direct select mode and our selected feature no longer exists
-            // (because it was deleted), we need to get out of that mode.
-            if (
-              api.getMode() === Constants.modes.DIRECT_SELECT &&
-              !ctx.store.getSelectedIds().length
-            ) {
-              ctx.events.changeMode(Constants.modes.SIMPLE_SELECT, undefined, {
-                silent: true,
-              });
-            } else {
-              ctx.store.render();
-            }
+            deleteFeatures();
           }
 
           return api;
@@ -158,6 +165,10 @@ export default function (ctx, api) {
         .catch(() => {
           // do nothing
         });
+    } else {
+      deleteFeatures();
+
+      return api;
     }
   };
 

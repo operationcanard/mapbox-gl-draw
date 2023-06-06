@@ -54,7 +54,7 @@ export default function (modeObject) {
         mode.onStop(state);
       },
       trash() {
-        mode.onTrash(state);
+        mode.onTrash(state, ctx.options);
       },
       combineFeatures() {
         mode.onCombineFeatures(state);
