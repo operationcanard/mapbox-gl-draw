@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import {Evented} from 'mapbox-gl/src/util/evented';
-import formatNumber from '../lib/format_number';
-import land from '../fixtures/land.json';
-import fpsRunner from '../lib/fps';
-import TraceMouse from '../lib/mouse_trace';
-import traceProgress from '../lib/trace_progress';
+import { Evented } from "mapbox-gl/src/util/evented";
+import formatNumber from "../lib/format_number";
+import land from "../fixtures/land.json";
+import fpsRunner from "../lib/fps";
+import TraceMouse from "../lib/mouse_trace";
+import traceProgress from "../lib/trace_progress";
 
 export default class Benchmark extends Evented {
   constructor(options) {
@@ -23,11 +23,11 @@ export default class Benchmark extends Evented {
 
     traceProgress(land.features, out.map);
 
-    const traceMouse = function(cb) {
-      const runner = function(count) {
+    const traceMouse = function (cb) {
+      const runner = function (count) {
         const draw = drawing[count];
         if (draw) {
-          out.draw.changeMode('draw_polygon');
+          out.draw.changeMode("draw_polygon");
           draw(() => {
             runner(count + 1);
           });
@@ -38,18 +38,20 @@ export default class Benchmark extends Evented {
       runner(0);
     };
 
-    out.map.on('load', () => {
+    out.map.on("load", () => {
       setTimeout(() => {
         const FPSControl = fpsRunner();
         FPSControl.start();
         traceMouse(() => {
           const fps = FPSControl.stop();
           if (fps < 55) {
-            this.fire('fail', {message: `${formatNumber(fps)} fps - expected 55fps or better`});
+            this.fire("fail", {
+              message: `${formatNumber(fps)} fps - expected 55fps or better`,
+            });
           } else {
-            this.fire('pass', {message: `${formatNumber(fps)} fps`});
+            this.fire("pass", { message: `${formatNumber(fps)} fps` });
           }
-          out.draw.changeMode('simple_select');
+          out.draw.changeMode("simple_select");
         });
       }, 2000);
     });

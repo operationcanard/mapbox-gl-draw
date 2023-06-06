@@ -1,4 +1,4 @@
-import Point from '@mapbox/point-geometry';
+import Point from "@mapbox/point-geometry";
 
 /**
  * Returns a Point representing a mouse event's position

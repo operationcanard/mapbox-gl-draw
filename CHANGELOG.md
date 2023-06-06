@@ -3,11 +3,13 @@
 # 1.2.2
 
 ### Bug Fixes:
+
 - Fix midpoint calculation when using mapbox-gl-draw with 3d terrain
 
 # 1.2.1
 
 ### Bug Fixes:
+
 - Upgrade `peerDependencies` to allow `mapbox-gl@2.0.0+` to be used with gl-draw.
 - Update `package.json` so that usage of library from npm always results in pulling in the built bundle.
 - Remove `require()`'ing of unsed node builtins like `fs` and `path` from the bundle.
@@ -21,6 +23,7 @@
 - Switch from Uglify to buble in order to produce better and more compatible code
 
 ### Bug fixes:
+
 - Trash correct vertices by changing sort to be numeric-aware [#943](https://github.com/mapbox/mapbox-gl-draw/pull/943)
 
 ## 1.1.2
@@ -55,7 +58,7 @@
 
 ## 1.0.6
 
-- Fixes bug where event.srcElement is not defined in Firefox  [#752](https://github.com/mapbox/mapbox-gl-draw/pull/752) via [@pastcompute](https://github.com/pastcompute)
+- Fixes bug where event.srcElement is not defined in Firefox [#752](https://github.com/mapbox/mapbox-gl-draw/pull/752) via [@pastcompute](https://github.com/pastcompute)
 
 ## 1.0.5
 
@@ -236,54 +239,54 @@
 
 ## 0.7.0
 
-* Draw now supports MultiPoint, MultiLineString and MultiPolygon geojson feature types.
+- Draw now supports MultiPoint, MultiLineString and MultiPolygon geojson feature types.
 
 ## 0.6.7
 
-* Allow use of mapbox-gl@0.19
+- Allow use of mapbox-gl@0.19
 
 ## 0.6.6
 
-* Fix mouse cursors when Draw is created before the map is available
-* Fix Draw.add when adding a feature that already exhists
+- Fix mouse cursors when Draw is created before the map is available
+- Fix Draw.add when adding a feature that already exhists
 
 ## 0.6.5
 
-* Ensure keybindings option is enforced
+- Ensure keybindings option is enforced
 
 ## 0.6.4
 
-* Major speed improvement while drawing
-* Removes displaying polygons and lines as points when they are very small
+- Major speed improvement while drawing
+- Removes displaying polygons and lines as points when they are very small
 
 ## 0.6.0
 
-* Draw.add now runs geojsonhint on provided features to confirm they are valid geojson
-* Draw.add now doesn't add any features to the map if one provided has an error
-* It used to be possible to trick Draw into thinking you were dragging when you meant to be clicking. This also helps not move the map while clicking rather than dragging.
-* Moved to size bassed selection. This means the smallest feature is selected first. Points, than LineStrings, than Polygons where polygons are selected in order of their area.
+- Draw.add now runs geojsonhint on provided features to confirm they are valid geojson
+- Draw.add now doesn't add any features to the map if one provided has an error
+- It used to be possible to trick Draw into thinking you were dragging when you meant to be clicking. This also helps not move the map while clicking rather than dragging.
+- Moved to size bassed selection. This means the smallest feature is selected first. Points, than LineStrings, than Polygons where polygons are selected in order of their area.
 
 ## 0.6.0-rc9
 
-* Upgrade to mapbox-gl-js-mock v0.18
+- Upgrade to mapbox-gl-js-mock v0.18
 
 ## 0.6.0-rc8
 
-* Upgrade to Mapbox GL JS v0.18
+- Upgrade to Mapbox GL JS v0.18
 
 ## 0.6.0-rc7
 
-* When moving from a drawing mode to simple select, select the new feature
+- When moving from a drawing mode to simple select, select the new feature
 
 ## 0.6.0-rc6
 
-* Fix custom styling
-* Draw.add now updates the stored properties of a feature
-* Draw no longer emits features that are invalid as changed
+- Fix custom styling
+- Draw.add now updates the stored properties of a feature
+- Draw no longer emits features that are invalid as changed
 
 ## 0.6.0-rc5
 
-* polygons and lines that are too small to see now show up as points
+- polygons and lines that are too small to see now show up as points
 
 ## 0.6.0-rc4
 
@@ -313,16 +316,16 @@ To preview this release please take a look API.md to get started. Feedback is ve
 
 ## 0.4.0
 
-* Name space css. If you are not using the provided CSS, update your own css to match the new naming schemes.
-* displayControlsDefault lets a you change the default option for displaying controls from true to false
-* fixed bug where `update` didn't render changes
-* fixed bug where drag events that shouldn't drag the map still would due to a featuresAt race condition
+- Name space css. If you are not using the provided CSS, update your own css to match the new naming schemes.
+- displayControlsDefault lets a you change the default option for displaying controls from true to false
+- fixed bug where `update` didn't render changes
+- fixed bug where drag events that shouldn't drag the map still would due to a featuresAt race condition
 
 ## 0.3.6
 
-* Performance improvements
-* Supports mapbox-gl@0.15.0
-* Cleans up event listeners on Draw.remove
+- Performance improvements
+- Supports mapbox-gl@0.15.0
+- Cleans up event listeners on Draw.remove
 
 ## 0.3.5
 
@@ -348,19 +351,19 @@ Expands support to [mapbox-gl@0.14.0](https://github.com/mapbox/mapbox-gl-js/rel
 
 #### Drawing changes
 
-* When editing a feature, clicking on a node will delete it
-* When creating a feature, escape ends drawing and deletes the features. No events are fired.
-* When editing a feature, escape reverts changes to what the feature looked like when editing started
+- When editing a feature, clicking on a node will delete it
+- When creating a feature, escape ends drawing and deletes the features. No events are fired.
+- When editing a feature, escape reverts changes to what the feature looked like when editing started
 
 #### Bug fixes
 
-* Fixed bug where the trash can would show up when zooming via the zoom box.
-* Fixed bug where starting a new feature before finishing an old feature would save the old feature even if it was invalid
+- Fixed bug where the trash can would show up when zooming via the zoom box.
+- Fixed bug where starting a new feature before finishing an old feature would save the old feature even if it was invalid
 
 #### API enhancements
 
-* `startDrawing` lets you initiate drawing with your controls.
-* The controls object now accepts `trash` letting you hide the trash control
+- `startDrawing` lets you initiate drawing with your controls.
+- The controls object now accepts `trash` letting you hide the trash control
 
 ## 0.2.4
 
@@ -370,35 +373,35 @@ Ships `dist/mapbox-gl-draw.js` to npm even though it is not committed.
 
 #### Bug Fixes
 
-* drawId was leaked to props in the minor bump, this was a mistake
-* Features added via Draw.add had to be selected twice
+- drawId was leaked to props in the minor bump, this was a mistake
+- Features added via Draw.add had to be selected twice
 
 ## 0.2.2
 
 #### Drawing Changes
 
-* Square now acts as a macro for square polygons. Before a square feature had to always be a square feature while it was in side of draw, but could be edited outside.
-* Square now works as a two click tool, dropping support for click-drag-release.
-* draw.select.start and draw.select.end don't fire in the creation phase of a feature
-* draw.set is only fired when the feature has been completed
+- Square now acts as a macro for square polygons. Before a square feature had to always be a square feature while it was in side of draw, but could be edited outside.
+- Square now works as a two click tool, dropping support for click-drag-release.
+- draw.select.start and draw.select.end don't fire in the creation phase of a feature
+- draw.set is only fired when the feature has been completed
 
 #### Bug Fixes
 
-* Default draw styles, conform to the [mapbox-gl-style-spec](https://www.mapbox.com/mapbox-gl-style-spec/)
-* Points now appear pink when selected using the default style
-* Clicking the trash can while creating a feature, concludes the drawing
-* Users are able to drag the under lying map while drawing
-* Works with mapbox-gl-js@0.13.1
+- Default draw styles, conform to the [mapbox-gl-style-spec](https://www.mapbox.com/mapbox-gl-style-spec/)
+- Points now appear pink when selected using the default style
+- Clicking the trash can while creating a feature, concludes the drawing
+- Users are able to drag the under lying map while drawing
+- Works with mapbox-gl-js@0.13.1
 
 ## 0.1.7
 
 #### Breaking changes
 
-* Renamed `Draw.remove` to `Draw.destroy`
+- Renamed `Draw.remove` to `Draw.destroy`
 
 #### API Improvements
 
-* `Draw.remove` now removes Mapbox-GL-Draw from your map
+- `Draw.remove` now removes Mapbox-GL-Draw from your map
 
 ## 0.1.5
 
@@ -412,13 +415,13 @@ Fixes bug with Draw.add that was making new features not render
 
 #### Breaking changes
 
-* Renamed style theme for selected features. Was `gl-edit-{feature}`, now `gl-draw-selected-{feature}`.
-* Renamed `Draw.set` method to `Draw.add`.
-* Renamed `Draw.getEditing` method to `Draw.getSelected`.
-* Renamed `draw.select` event to `draw.select.start`.
-* Renamed `draw.deselect` event to `draw.select.end`.
+- Renamed style theme for selected features. Was `gl-edit-{feature}`, now `gl-draw-selected-{feature}`.
+- Renamed `Draw.set` method to `Draw.add`.
+- Renamed `Draw.getEditing` method to `Draw.getSelected`.
+- Renamed `draw.select` event to `draw.select.start`.
+- Renamed `draw.deselect` event to `draw.select.end`.
 
 #### API Improvements
 
-* Added 4 selection methods: `Draw.select`, `Draw.selectAll`, `Draw.deselect`, and `Draw.deselectAll`.
-* Draw.add treats feature.id as its internal id so you can use external ids with Draw.get
+- Added 4 selection methods: `Draw.select`, `Draw.selectAll`, `Draw.deselect`, and `Draw.deselectAll`.
+- Draw.add treats feature.id as its internal id so you can use external ids with Draw.get

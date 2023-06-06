@@ -1,22 +1,22 @@
-import test from 'tape';
-import Point from '@mapbox/point-geometry';
-import mouseEventPoint from '../src/lib/mouse_event_point';
+import test from "tape";
+import Point from "@mapbox/point-geometry";
+import mouseEventPoint from "../src/lib/mouse_event_point";
 
-test('mouseEventPoint', (t) => {
+test("mouseEventPoint", (t) => {
   const mockContainer = {
     clientLeft: 2,
     clientTop: 1,
     getBoundingClientRect() {
       return {
         left: 10,
-        top: 20
+        top: 20,
       };
-    }
+    },
   };
 
   const mockEvent = {
     clientX: 15,
-    clientY: 33
+    clientY: 33,
   };
 
   const result = mouseEventPoint(mockEvent, mockContainer);

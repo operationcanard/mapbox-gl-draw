@@ -1,4 +1,4 @@
-import spy from 'sinon/lib/sinon/spy'; // avoid babel-register-related error by importing only spy
+import spy from "sinon/lib/sinon/spy"; // avoid babel-register-related error by importing only spy
 
 /**
  * Returns an mock ctx object with just those properties a Feature
@@ -6,13 +6,15 @@ import spy from 'sinon/lib/sinon/spy'; // avoid babel-register-related error by 
  *
  * @return {Object}
  */
-export default function createMockFeatureContext(opts = { userProperties: false}) {
+export default function createMockFeatureContext(
+  opts = { userProperties: false }
+) {
   return {
     options: {
-      userProperties: opts.userProperties
+      userProperties: opts.userProperties,
     },
     store: {
-      featureChanged: spy()
-    }
+      featureChanged: spy(),
+    },
   };
 }

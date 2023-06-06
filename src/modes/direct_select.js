@@ -1,9 +1,15 @@
-import {noTarget, isOfMetaType, isActiveFeature, isInactiveFeature, isShiftDown} from '../lib/common_selectors';
-import createSupplementaryPoints from '../lib/create_supplementary_points';
-import constrainFeatureMovement from '../lib/constrain_feature_movement';
-import doubleClickZoom from '../lib/double_click_zoom';
-import * as Constants from '../constants';
-import moveFeatures from '../lib/move_features';
+import {
+  noTarget,
+  isOfMetaType,
+  isActiveFeature,
+  isInactiveFeature,
+  isShiftDown,
+} from "../lib/common_selectors";
+import createSupplementaryPoints from "../lib/create_supplementary_points";
+import constrainFeatureMovement from "../lib/constrain_feature_movement";
+import doubleClickZoom from "../lib/double_click_zoom";
+import * as Constants from "../constants";
+import moveFeatures from "../lib/move_features";
 
 const isVertex = isOfMetaType(Constants.meta.VERTEX);
 const isMidpoint = isOfMetaType(Constants.meta.MIDPOINT);
@@ -12,39 +18,39 @@ const DirectSelect = {};
 
 // INTERNAL FUCNTIONS
 
-DirectSelect.shouldSelect = function(e) {
-
+DirectSelect.shouldSelect = function (e) {
   const isLeftClick = e.originalEvent.button === 0;
   const isRightClick = e.originalEvent.button === 2;
 
   // Prevent from selecting features with other clicks than left clicks
-  if (!isLeftClick && (isRightClick && this.getSelected().length >= 2)) return false;
+  if (!isLeftClick && isRightClick && this.getSelected().length >= 2)
+    return false;
 
   return true;
 };
 
-DirectSelect.fireUpdate = function() {
+DirectSelect.fireUpdate = function () {
   this.map.fire(Constants.events.UPDATE, {
     action: Constants.updateActions.CHANGE_COORDINATES,
-    features: this.getSelected().map(f => f.toGeoJSON())
+    features: this.getSelected().map((f) => f.toGeoJSON()),
   });
 };
 
-DirectSelect.fireActionable = function(state) {
+DirectSelect.fireActionable = function (state) {
   this.setActionableState({
     combineFeatures: false,
     uncombineFeatures: false,
-    trash: state.selectedCoordPaths.length > 0
+    trash: state.selectedCoordPaths.length > 0,
   });
 };
 
-DirectSelect.startDragging = function(state, e) {
+DirectSelect.startDragging = function (state, e) {
   this.map.dragPan.disable();
   state.canDragMove = true;
   state.dragMoveLocation = e.lngLat;
 };
 
-DirectSelect.stopDragging = function(state) {
+DirectSelect.stopDragging = function (state) {
   this.map.dragPan.enable();
   state.dragMoving = false;
   state.canDragMove = false;
@@ -61,11 +67,14 @@ DirectSelect.onVertex = function (state, e) {
     state.selectedCoordPaths.push(about.coord_path);
   }
 
-  const selectedCoordinates = this.pathsToCoordinates(state.featureId, state.selectedCoordPaths);
+  const selectedCoordinates = this.pathsToCoordinates(
+    state.featureId,
+    state.selectedCoordPaths
+  );
   this.setSelectedCoordinates(selectedCoordinates);
 };
 
-DirectSelect.onMidpoint = function(state, e) {
+DirectSelect.onMidpoint = function (state, e) {
   this.startDragging(state, e);
   const about = e.featureTarget.properties;
   state.feature.addCoordinate(about.coord_path, about.lng, about.lat);
@@ -73,35 +82,41 @@ DirectSelect.onMidpoint = function(state, e) {
   state.selectedCoordPaths = [about.coord_path];
 };
 
-DirectSelect.pathsToCoordinates = function(featureId, paths) {
-  return paths.map(coord_path => ({ feature_id: featureId, coord_path }));
+DirectSelect.pathsToCoordinates = function (featureId, paths) {
+  return paths.map((coord_path) => ({ feature_id: featureId, coord_path }));
 };
 
-DirectSelect.onFeature = function(state, e) {
+DirectSelect.onFeature = function (state, e) {
   if (state.selectedCoordPaths.length === 0) this.startDragging(state, e);
   else this.stopDragging(state);
 };
 
-DirectSelect.dragFeature = function(state, e, delta) {
+DirectSelect.dragFeature = function (state, e, delta) {
   moveFeatures(this.getSelected(), delta);
   state.dragMoveLocation = e.lngLat;
 };
 
-DirectSelect.dragVertex = function(state, e, delta) {
-  const selectedCoords = state.selectedCoordPaths.map(coord_path => state.feature.getCoordinate(coord_path));
-  const selectedCoordPoints = selectedCoords.map(coords => ({
+DirectSelect.dragVertex = function (state, e, delta) {
+  const selectedCoords = state.selectedCoordPaths.map((coord_path) =>
+    state.feature.getCoordinate(coord_path)
+  );
+  const selectedCoordPoints = selectedCoords.map((coords) => ({
     type: Constants.geojsonTypes.FEATURE,
     properties: {},
     geometry: {
       type: Constants.geojsonTypes.POINT,
-      coordinates: coords
-    }
+      coordinates: coords,
+    },
   }));
 
   const constrainedDelta = constrainFeatureMovement(selectedCoordPoints, delta);
   for (let i = 0; i < selectedCoords.length; i++) {
     const coord = selectedCoords[i];
-    state.feature.updateCoordinate(state.selectedCoordPaths[i], coord[0] + constrainedDelta.lng, coord[1] + constrainedDelta.lat);
+    state.feature.updateCoordinate(
+      state.selectedCoordPaths[i],
+      coord[0] + constrainedDelta.lng,
+      coord[1] + constrainedDelta.lat
+    );
   }
 };
 
@@ -121,16 +136,16 @@ DirectSelect.clickActiveFeature = function (state) {
 
 // EXTERNAL FUNCTIONS
 
-DirectSelect.onSetup = function(opts) {
+DirectSelect.onSetup = function (opts) {
   const featureId = opts.featureId;
   const feature = this.getFeature(featureId);
 
   if (!feature) {
-    throw new Error('You must provide a featureId to enter direct_select mode');
+    throw new Error("You must provide a featureId to enter direct_select mode");
   }
 
   if (feature.type === Constants.geojsonTypes.POINT) {
-    throw new TypeError('direct_select mode doesn\'t handle point features');
+    throw new TypeError("direct_select mode doesn't handle point features");
   }
 
   const state = {
@@ -139,33 +154,35 @@ DirectSelect.onSetup = function(opts) {
     dragMoveLocation: opts.startPos || null,
     dragMoving: false,
     canDragMove: false,
-    selectedCoordPaths: opts.coordPath ? [opts.coordPath] : []
+    selectedCoordPaths: opts.coordPath ? [opts.coordPath] : [],
   };
 
-  this.setSelectedCoordinates(this.pathsToCoordinates(featureId, state.selectedCoordPaths));
+  this.setSelectedCoordinates(
+    this.pathsToCoordinates(featureId, state.selectedCoordPaths)
+  );
   this.setSelected(featureId);
   doubleClickZoom.disable(this);
 
   this.setActionableState({
-    trash: true
+    trash: true,
   });
 
   return state;
 };
 
-DirectSelect.onStop = function() {
+DirectSelect.onStop = function () {
   doubleClickZoom.enable(this);
   this.clearSelectedCoordinates();
 };
 
-DirectSelect.toDisplayFeatures = function(state, geojson, push) {
+DirectSelect.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
     geojson.properties.active = Constants.activeStates.ACTIVE;
     push(geojson);
     createSupplementaryPoints(geojson, {
       map: this.map,
       midpoints: true,
-      selectedPaths: state.selectedCoordPaths
+      selectedPaths: state.selectedCoordPaths,
     }).forEach(push);
   } else {
     geojson.properties.active = Constants.activeStates.INACTIVE;
@@ -174,12 +191,12 @@ DirectSelect.toDisplayFeatures = function(state, geojson, push) {
   this.fireActionable(state);
 };
 
-DirectSelect.onTrash = function(state) {
+DirectSelect.onTrash = function (state) {
   // Uses number-aware sorting to make sure '9' < '10'. Comparison is reversed because we want them
   // in reverse order so that we can remove by index safely.
   state.selectedCoordPaths
-    .sort((a, b) => b.localeCompare(a, 'en', { numeric: true }))
-    .forEach(id => state.feature.removeCoordinate(id));
+    .sort((a, b) => b.localeCompare(a, "en", { numeric: true }))
+    .forEach((id) => state.feature.removeCoordinate(id));
   this.fireUpdate();
   state.selectedCoordPaths = [];
   this.clearSelectedCoordinates();
@@ -190,13 +207,15 @@ DirectSelect.onTrash = function(state) {
   }
 };
 
-DirectSelect.onMouseMove = function(state, e) {
+DirectSelect.onMouseMove = function (state, e) {
   // On mousemove that is not a drag, stop vertex movement.
   const isFeature = isActiveFeature(e);
   const onVertex = isVertex(e);
   const noCoords = state.selectedCoordPaths.length === 0;
-  if (isFeature && noCoords) this.updateUIClasses({ mouse: Constants.cursors.MOVE });
-  else if (onVertex && !noCoords) this.updateUIClasses({ mouse: Constants.cursors.MOVE });
+  if (isFeature && noCoords)
+    this.updateUIClasses({ mouse: Constants.cursors.MOVE });
+  else if (onVertex && !noCoords)
+    this.updateUIClasses({ mouse: Constants.cursors.MOVE });
   else this.updateUIClasses({ mouse: Constants.cursors.NONE });
   this.stopDragging(state);
 
@@ -204,7 +223,7 @@ DirectSelect.onMouseMove = function(state, e) {
   return true;
 };
 
-DirectSelect.onMouseOut = function(state) {
+DirectSelect.onMouseOut = function (state) {
   // As soon as you mouse leaves the canvas, update the feature
   if (state.dragMoving) this.fireUpdate();
 
@@ -212,20 +231,20 @@ DirectSelect.onMouseOut = function(state) {
   return true;
 };
 
-DirectSelect.onTouchStart = DirectSelect.onMouseDown = function(state, e) {
+DirectSelect.onTouchStart = DirectSelect.onMouseDown = function (state, e) {
   if (isVertex(e)) return this.onVertex(state, e);
   if (isActiveFeature(e)) return this.onFeature(state, e);
   if (isMidpoint(e)) return this.onMidpoint(state, e);
 };
 
-DirectSelect.onDrag = function(state, e) {
+DirectSelect.onDrag = function (state, e) {
   if (state.canDragMove !== true) return;
   state.dragMoving = true;
   e.originalEvent.stopPropagation();
 
   const delta = {
     lng: e.lngLat.lng - state.dragMoveLocation.lng,
-    lat: e.lngLat.lat - state.dragMoveLocation.lat
+    lat: e.lngLat.lat - state.dragMoveLocation.lat,
   };
   if (state.selectedCoordPaths.length > 0) this.dragVertex(state, e, delta);
   else this.dragFeature(state, e, delta);
@@ -233,7 +252,7 @@ DirectSelect.onDrag = function(state, e) {
   state.dragMoveLocation = e.lngLat;
 };
 
-DirectSelect.onClick = function(state, e) {
+DirectSelect.onClick = function (state, e) {
   if (!this.shouldSelect(e)) return;
 
   if (noTarget(e)) return this.clickNoTarget(state, e);
@@ -242,7 +261,7 @@ DirectSelect.onClick = function(state, e) {
   this.stopDragging(state);
 };
 
-DirectSelect.onTap = function(state, e) {
+DirectSelect.onTap = function (state, e) {
   if (!this.shouldSelect(e)) return;
 
   if (noTarget(e)) return this.clickNoTarget(state, e);
@@ -250,7 +269,7 @@ DirectSelect.onTap = function(state, e) {
   if (isInactiveFeature(e)) return this.clickInactive(state, e);
 };
 
-DirectSelect.onTouchEnd = DirectSelect.onMouseUp = function(state) {
+DirectSelect.onTouchEnd = DirectSelect.onMouseUp = function (state) {
   if (state.dragMoving) {
     this.fireUpdate();
   }
@@ -258,4 +277,3 @@ DirectSelect.onTouchEnd = DirectSelect.onMouseUp = function(state) {
 };
 
 export default DirectSelect;
-
