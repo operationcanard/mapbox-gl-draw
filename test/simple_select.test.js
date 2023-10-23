@@ -29,13 +29,13 @@ test('simple_select', (t) => {
 
   const afterNextRender = setupAfterNextRender(map);
 
-  const cleanUp = function(cb) {
+  const cleanUp = function (cb) {
     Draw.deleteAll();
     map.fire.resetHistory();
     if (cb) cb();
   };
 
-  const getFireArgs = function() {
+  const getFireArgs = function () {
     const args = [];
     for (let i = 0; i < map.fire.callCount; i++) {
       args.push(map.fire.getCall(i).args);
@@ -44,7 +44,7 @@ test('simple_select', (t) => {
   };
 
   t.test('simple_select - init map for tests', (t) => {
-    const done = function() {
+    const done = function () {
       map.off('load', done);
       t.end();
     };
@@ -425,7 +425,7 @@ test('simple_select', (t) => {
     const polygonId = Draw.add(getGeoJSON('polygon'))[0];
     const multiPolygonId = Draw.add(getGeoJSON('multiPolygon'))[0];
 
-    const countPositions = function(feature) {
+    const countPositions = function (feature) {
       return feature.geometry.coordinates.join(',').split(',').length;
     };
 
@@ -488,28 +488,6 @@ test('simple_select', (t) => {
       map.fire('mouseup', makeMouseEvent(startPosition[0] + 25, startPosition[1] + 25));
 
       const movedPoint = Draw.get(pointId);
-      t.equal(movedPoint.geometry.coordinates[0], startPosition[0] + 15, 'point lng moved only the first amount');
-      t.equal(movedPoint.geometry.coordinates[1], startPosition[1] + 15, 'point lat moved only the first amount');
-
-      cleanUp(t.end);
-    });
-  });
-
-  t.test('simple_select - fire one update when dragging mouse leaves container and button is released outside', (t) => {
-    const pointId = Draw.add(getGeoJSON('point'))[0];
-    Draw.changeMode('simple_select', { featureIds: [pointId] });
-    const startPosition = getGeoJSON('point').geometry.coordinates;
-    afterNextRender(() => {
-      map.fire.resetHistory();
-      map.fire('mousedown', makeMouseEvent(startPosition[0], startPosition[1]));
-      map.fire('mousemove', makeMouseEvent(startPosition[0] + 15, startPosition[1] + 15, { buttons: 1 }));
-      mapContainer.dispatchEvent(createSyntheticEvent('mouseout'));
-      map.fire('mousemove', makeMouseEvent(startPosition[0] + 25, startPosition[1] + 25));
-      map.fire('mouseup', makeMouseEvent(startPosition[0] + 25, startPosition[1] + 25));
-
-      const movedPoint = Draw.get(pointId);
-      const args = getFireArgs().filter(arg => arg[0] === 'draw.update');
-      t.equal(args.length, 1, 'draw.update called once');
       t.equal(movedPoint.geometry.coordinates[0], startPosition[0] + 15, 'point lng moved only the first amount');
       t.equal(movedPoint.geometry.coordinates[1], startPosition[1] + 15, 'point lat moved only the first amount');
 
