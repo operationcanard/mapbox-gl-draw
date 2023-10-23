@@ -8,9 +8,9 @@ import * as Constants from '../constants';
 
 const SimpleSelect = {};
 
-SimpleSelect.shortcuts = [{key: 's'}];
+SimpleSelect.shortcuts = [{ key: 's' }];
 
-SimpleSelect.onSetup = function(opts) {
+SimpleSelect.onSetup = function (opts) {
   // turn the opts into state.
   const state = {
     dragMoveLocation: null,
@@ -35,14 +35,14 @@ SimpleSelect.onSetup = function(opts) {
   return state;
 };
 
-SimpleSelect.fireUpdate = function() {
+SimpleSelect.fireUpdate = function () {
   this.map.fire(Constants.events.UPDATE, {
     action: Constants.updateActions.MOVE,
     features: this.getSelected().map(f => f.toGeoJSON())
   });
 };
 
-SimpleSelect.fireActionable = function() {
+SimpleSelect.fireActionable = function () {
   const selectedFeatures = this.getSelected();
 
   const multiFeatures = selectedFeatures.filter(
@@ -69,7 +69,7 @@ SimpleSelect.fireActionable = function() {
   });
 };
 
-SimpleSelect.getUniqueIds = function(allFeatures) {
+SimpleSelect.getUniqueIds = function (allFeatures) {
   if (!allFeatures.length) return [];
   const ids = allFeatures.map(s => s.properties.id)
     .filter(id => id !== undefined)
@@ -81,7 +81,7 @@ SimpleSelect.getUniqueIds = function(allFeatures) {
   return ids.values();
 };
 
-SimpleSelect.stopExtendedInteractions = function(state) {
+SimpleSelect.stopExtendedInteractions = function (state) {
   if (state.boxSelectElement) {
     if (state.boxSelectElement.parentNode) state.boxSelectElement.parentNode.removeChild(state.boxSelectElement);
     state.boxSelectElement = null;
@@ -95,23 +95,11 @@ SimpleSelect.stopExtendedInteractions = function(state) {
   state.canDragMove = false;
 };
 
-SimpleSelect.onStop = function() {
+SimpleSelect.onStop = function () {
   doubleClickZoom.enable(this);
 };
 
-SimpleSelect.onMouseMove = function(state) {
-  // On mousemove that is not a drag, stop extended interactions.
-  // This is useful if you drag off the canvas, release the button,
-  // then move the mouse back over the canvas --- we don't allow the
-  // interaction to continue then, but we do let it continue if you held
-  // the mouse button that whole time
-  this.stopExtendedInteractions(state);
-
-  // Skip render
-  return true;
-};
-
-SimpleSelect.onMouseOut = function(state) {
+SimpleSelect.onMouseOut = function (state) {
   // As soon as you mouse leaves the canvas, update the feature
   if (state.dragMoving) return this.fireUpdate();
 
@@ -119,7 +107,7 @@ SimpleSelect.onMouseOut = function(state) {
   return true;
 };
 
-SimpleSelect.onTap = SimpleSelect.onClick = function(state, e) {
+SimpleSelect.onTap = SimpleSelect.onClick = function (state, e) {
   const isLeftClick = e.originalEvent.button === 0;
   const isRightClick = e.originalEvent.button === 2;
 
@@ -143,7 +131,7 @@ SimpleSelect.clickAnywhere = function (state) {
   this.stopExtendedInteractions(state);
 };
 
-SimpleSelect.clickOnVertex = function(state, e) {
+SimpleSelect.clickOnVertex = function (state, e) {
   // Enter direct select mode
   this.changeMode(Constants.modes.DIRECT_SELECT, {
     featureId: e.featureTarget.properties.parent,
@@ -153,7 +141,7 @@ SimpleSelect.clickOnVertex = function(state, e) {
   this.updateUIClasses({ mouse: Constants.cursors.MOVE });
 };
 
-SimpleSelect.startOnActiveFeature = function(state, e) {
+SimpleSelect.startOnActiveFeature = function (state, e) {
   // Stop any already-underway extended interactions
   this.stopExtendedInteractions(state);
 
@@ -168,7 +156,7 @@ SimpleSelect.startOnActiveFeature = function(state, e) {
   state.dragMoveLocation = e.lngLat;
 };
 
-SimpleSelect.clickOnFeature = function(state, e) {
+SimpleSelect.clickOnFeature = function (state, e) {
   // Stop everything
   doubleClickZoom.disable(this);
   this.stopExtendedInteractions(state);
@@ -194,12 +182,12 @@ SimpleSelect.clickOnFeature = function(state, e) {
     if (selectedFeatureIds.length === 1) {
       doubleClickZoom.enable(this);
     }
-  // Shift-click on an unselected feature
+    // Shift-click on an unselected feature
   } else if (!isFeatureSelected && isShiftClick) {
     // Add it to the selection
     this.select(featureId);
     this.updateUIClasses({ mouse: Constants.cursors.MOVE });
-  // Click (without shift) on an unselected feature
+    // Click (without shift) on an unselected feature
   } else if (!isFeatureSelected && !isShiftClick) {
     // Make it the only selected feature
     selectedFeatureIds.forEach(id => this.doRender(id));
@@ -211,12 +199,12 @@ SimpleSelect.clickOnFeature = function(state, e) {
   this.doRender(featureId);
 };
 
-SimpleSelect.onMouseDown = function(state, e) {
+SimpleSelect.onMouseDown = function (state, e) {
   if (CommonSelectors.isActiveFeature(e)) return this.startOnActiveFeature(state, e);
   if (this.drawConfig.boxSelect && CommonSelectors.isShiftMousedown(e)) return this.startBoxSelect(state, e);
 };
 
-SimpleSelect.startBoxSelect = function(state, e) {
+SimpleSelect.startBoxSelect = function (state, e) {
   this.stopExtendedInteractions(state);
   this.map.dragPan.disable();
   // Enable box select
@@ -224,16 +212,16 @@ SimpleSelect.startBoxSelect = function(state, e) {
   state.canBoxSelect = true;
 };
 
-SimpleSelect.onTouchStart = function(state, e) {
+SimpleSelect.onTouchStart = function (state, e) {
   if (CommonSelectors.isActiveFeature(e)) return this.startOnActiveFeature(state, e);
 };
 
-SimpleSelect.onDrag = function(state, e) {
+SimpleSelect.onDrag = function (state, e) {
   if (state.canDragMove) return this.dragMove(state, e);
   if (this.drawConfig.boxSelect && state.canBoxSelect) return this.whileBoxSelect(state, e);
 };
 
-SimpleSelect.whileBoxSelect = function(state, e) {
+SimpleSelect.whileBoxSelect = function (state, e) {
   state.boxSelecting = true;
   this.updateUIClasses({ mouse: Constants.cursors.ADD });
 
@@ -257,7 +245,7 @@ SimpleSelect.whileBoxSelect = function(state, e) {
   state.boxSelectElement.style.height = `${maxY - minY}px`;
 };
 
-SimpleSelect.dragMove = function(state, e) {
+SimpleSelect.dragMove = function (state, e) {
   // Dragging when drag move is enabled
   state.dragMoving = true;
   e.originalEvent.stopPropagation();
@@ -272,7 +260,7 @@ SimpleSelect.dragMove = function(state, e) {
   state.dragMoveLocation = e.lngLat;
 };
 
-SimpleSelect.onTouchEnd = SimpleSelect.onMouseUp = function(state, e) {
+SimpleSelect.onTouchEnd = SimpleSelect.onMouseUp = function (state, e) {
   // End any extended interactions
   if (state.dragMoving) {
     this.fireUpdate();
@@ -294,7 +282,7 @@ SimpleSelect.onTouchEnd = SimpleSelect.onMouseUp = function(state, e) {
   this.stopExtendedInteractions(state);
 };
 
-SimpleSelect.toDisplayFeatures = function(state, geojson, display) {
+SimpleSelect.toDisplayFeatures = function (state, geojson, display) {
   geojson.properties.active = (this.isSelected(geojson.properties.id)) ?
     Constants.activeStates.ACTIVE : Constants.activeStates.INACTIVE;
   display(geojson);
@@ -304,12 +292,12 @@ SimpleSelect.toDisplayFeatures = function(state, geojson, display) {
   createSupplementaryPoints(geojson).forEach(display);
 };
 
-SimpleSelect.onTrash = function() {
+SimpleSelect.onTrash = function () {
   this.deleteFeature(this.getSelectedIds());
   this.fireActionable();
 };
 
-SimpleSelect.onCombineFeatures = function() {
+SimpleSelect.onCombineFeatures = function () {
   const selectedFeatures = this.getSelected();
 
   if (selectedFeatures.length === 0 || selectedFeatures.length < 2) return;
@@ -356,7 +344,7 @@ SimpleSelect.onCombineFeatures = function() {
   this.fireActionable();
 };
 
-SimpleSelect.onUncombineFeatures = function() {
+SimpleSelect.onUncombineFeatures = function () {
   const selectedFeatures = this.getSelected();
   if (selectedFeatures.length === 0) return;
 
