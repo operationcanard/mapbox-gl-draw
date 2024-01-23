@@ -166,8 +166,15 @@ SimpleSelect.clickOnFeature = function (state, e) {
   const featureId = e.featureTarget.properties.id;
   const isFeatureSelected = this.isSelected(featureId);
 
+  const feature = this.getFeature(featureId);
+
+  const isFeatureSelectable = feature.getIsSelectable();
+
+  // If the feature is not selectable, it's considered like a click on nothing, meaning unselecting all the selection
+  if (!isFeatureSelectable) return this.clickAnywhere(state);
+
   // Click (without shift) on any selected feature but a point
-  if (!isShiftClick && isFeatureSelected && this.getFeature(featureId).type !== Constants.geojsonTypes.POINT) {
+  if (!isShiftClick && isFeatureSelected && feature.type !== Constants.geojsonTypes.POINT) {
     // Enter direct select mode
     return this.changeMode(Constants.modes.DIRECT_SELECT, {
       featureId
@@ -270,7 +277,13 @@ SimpleSelect.onTouchEnd = SimpleSelect.onMouseUp = function (state, e) {
       mouseEventPoint(e.originalEvent, this.map.getContainer())
     ];
     const featuresInBox = this.featuresAt(null, bbox, 'click');
-    const idsToSelect = this.getUniqueIds(featuresInBox)
+    const selectableFeaturesInBox = featuresInBox.filter((f) => {
+      const feat = this.getFeature(f.properties.id);
+
+      return feat && feat.getIsSelectable();
+    });
+
+    const idsToSelect = this.getUniqueIds(selectableFeaturesInBox)
       .filter(id => !this.isSelected(id));
 
     if (idsToSelect.length) {
