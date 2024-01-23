@@ -42,6 +42,13 @@ Feature.prototype.toGeoJSON = function() {
   }));
 };
 
+Feature.prototype.getIsSelectable = function() {
+  // If the feature has no properties, we allow the selection because nothing is preventing us to do it
+  if (!this.properties) return true;
+
+  return this.properties.preventSelection !== true;
+};
+
 Feature.prototype.internal = function(mode) {
   const properties = {
     id: this.id,
