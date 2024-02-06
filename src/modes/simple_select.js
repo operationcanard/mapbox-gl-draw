@@ -22,8 +22,9 @@ SimpleSelect.onSetup = function (opts) {
     canDragMove: false,
     initiallySelectedFeatureIds: opts.featureIds || []
   };
+  const selection = state.initiallySelectedFeatureIds.map(id => this.getFeature(id)).filter(Boolean);
 
-  this.setSelected(state.initiallySelectedFeatureIds.filter(id => this.getFeature(id) !== undefined));
+  this.setSelected(selection.map(f => f.id));
   this.fireActionable();
 
   this.setActionableState({
@@ -35,11 +36,15 @@ SimpleSelect.onSetup = function (opts) {
   return state;
 };
 
-SimpleSelect.fireUpdate = function () {
+SimpleSelect.fireUpdate = function (state) {
+  const { initialFeaturesState } = state;
   this.map.fire(Constants.events.UPDATE, {
     action: Constants.updateActions.MOVE,
-    features: this.getSelected().map(f => f.toGeoJSON())
+    sources: initialFeaturesState,
+    features: this.getSelected().map(f => f.toGeoJSON()),
   });
+
+  this.updateInitialFeatureState(state);
 };
 
 SimpleSelect.fireActionable = function () {
@@ -101,7 +106,7 @@ SimpleSelect.onStop = function () {
 
 SimpleSelect.onMouseOut = function (state) {
   // As soon as you mouse leaves the canvas, update the feature
-  if (state.dragMoving) return this.fireUpdate();
+  if (state.dragMoving) return this.fireUpdate(state);
 
   // Skip render
   return true;
@@ -154,6 +159,8 @@ SimpleSelect.startOnActiveFeature = function (state, e) {
   // Set up the state for drag moving
   state.canDragMove = true;
   state.dragMoveLocation = e.lngLat;
+
+  this.updateInitialFeatureState(state);
 };
 
 SimpleSelect.clickOnFeature = function (state, e) {
@@ -270,7 +277,7 @@ SimpleSelect.dragMove = function (state, e) {
 SimpleSelect.onTouchEnd = SimpleSelect.onMouseUp = function (state, e) {
   // End any extended interactions
   if (state.dragMoving) {
-    this.fireUpdate();
+    this.fireUpdate(state);
   } else if (state.boxSelecting) {
     const bbox = [
       state.boxSelectStartLocation,
@@ -386,6 +393,10 @@ SimpleSelect.onUncombineFeatures = function () {
     });
   }
   this.fireActionable();
+};
+
+SimpleSelect.updateInitialFeatureState = function(state) {
+  state.initialFeaturesState = this.getSelected().map(f => f.toGeoJSON());
 };
 
 export default SimpleSelect;
