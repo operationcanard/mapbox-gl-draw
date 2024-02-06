@@ -23,11 +23,14 @@ DirectSelect.shouldSelect = function(e) {
   return true;
 };
 
-DirectSelect.fireUpdate = function() {
+DirectSelect.fireUpdate = function(state) {
   this.map.fire(Constants.events.UPDATE, {
     action: Constants.updateActions.CHANGE_COORDINATES,
+    sources: [state.initialFeatureState],
     features: this.getSelected().map(f => f.toGeoJSON())
   });
+
+  this.updateInitialFeatureState(state);
 };
 
 DirectSelect.fireActionable = function(state) {
@@ -52,6 +55,7 @@ DirectSelect.stopDragging = function(state) {
 };
 
 DirectSelect.onVertex = function (state, e) {
+  this.updateInitialFeatureState(state);
   this.startDragging(state, e);
   const about = e.featureTarget.properties;
   const selectedIndex = state.selectedCoordPaths.indexOf(about.coord_path);
@@ -69,7 +73,7 @@ DirectSelect.onMidpoint = function(state, e) {
   this.startDragging(state, e);
   const about = e.featureTarget.properties;
   state.feature.addCoordinate(about.coord_path, about.lng, about.lat);
-  this.fireUpdate();
+  this.fireUpdate(state);
   state.selectedCoordPaths = [about.coord_path];
 };
 
@@ -133,9 +137,12 @@ DirectSelect.onSetup = function(opts) {
     throw new TypeError('direct_select mode doesn\'t handle point features');
   }
 
+  const initialFeatureState = feature.toGeoJSON();
+
   const state = {
     featureId,
     feature,
+    initialFeatureState,
     dragMoveLocation: opts.startPos || null,
     dragMoving: false,
     canDragMove: false,
@@ -180,13 +187,14 @@ DirectSelect.onTrash = function(state) {
   state.selectedCoordPaths
     .sort((a, b) => b.localeCompare(a, 'en', { numeric: true }))
     .forEach(id => state.feature.removeCoordinate(id));
-  this.fireUpdate();
   state.selectedCoordPaths = [];
   this.clearSelectedCoordinates();
   this.fireActionable(state);
   if (state.feature.isValid() === false) {
     this.deleteFeature([state.featureId]);
     this.changeMode(Constants.modes.SIMPLE_SELECT, {});
+  } else {
+    this.fireUpdate(state);
   }
 };
 
@@ -206,7 +214,7 @@ DirectSelect.onMouseMove = function(state, e) {
 
 DirectSelect.onMouseOut = function(state) {
   // As soon as you mouse leaves the canvas, update the feature
-  if (state.dragMoving) this.fireUpdate();
+  if (state.dragMoving) this.fireUpdate(state);
 
   // Skip render
   return true;
@@ -252,9 +260,13 @@ DirectSelect.onTap = function(state, e) {
 
 DirectSelect.onTouchEnd = DirectSelect.onMouseUp = function(state) {
   if (state.dragMoving) {
-    this.fireUpdate();
+    this.fireUpdate(state);
   }
   this.stopDragging(state);
+};
+
+DirectSelect.updateInitialFeatureState = function(state) {
+  state.initialFeatureState = this.getSelected()[0].toGeoJSON();
 };
 
 export default DirectSelect;
