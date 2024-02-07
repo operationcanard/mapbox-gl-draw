@@ -147,7 +147,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'move',
-        features: [pointB]
+        features: [pointB],
+        sources: [pointA]
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update'
@@ -284,7 +285,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'move',
-        features: [lineB]
+        features: [lineB],
+        sources: [lineA],
       });
 
       t.deepEqual(flushDrawEvents(), [
@@ -345,7 +347,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [lineC]
+        features: [lineC],
+        sources: [lineB]
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update',
@@ -371,7 +374,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [lineD]
+        features: [lineD],
+        sources: [lineC]
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update'
@@ -397,7 +401,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [lineE]
+        features: [lineE],
+        sources: [lineD],
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update',
@@ -549,7 +554,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'move',
-        features: [lineF, polygonB]
+        features: [lineF, polygonB],
+        sources: [lineE, polygonA],
       });
 
       t.deepEqual(flushDrawEvents(), [
@@ -649,7 +655,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [polygonC]
+        features: [polygonC],
+        sources: [polygonB],
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update',
@@ -675,7 +682,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [polygonD]
+        features: [polygonD],
+        sources: [polygonC]
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update'
@@ -701,7 +709,8 @@ function runTests() {
     afterNextRender(() => {
       firedWith(t, 'draw.update', {
         action: 'change_coordinates',
-        features: [polygonE]
+        features: [polygonE],
+        sources: [polygonD]
       });
       t.deepEqual(flushDrawEvents(), [
         'draw.update',
@@ -997,6 +1006,9 @@ function firedWith(tester, eventName, expectedEventData) {
 
   if (actualEventData.features) {
     actualEventData.features = actualEventData.features.map(withoutId);
+    if (actualEventData.sources) {
+      actualEventData.sources = actualEventData.sources.map(withoutId);
+    }
   }
   tester.deepEqual(actualEventData, expectedEventData, 'with correct data');
   return call.args[1];
