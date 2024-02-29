@@ -7,9 +7,9 @@ const Polygon = function(ctx, geojson) {
 
 Polygon.prototype = Object.create(Feature.prototype);
 
-Polygon.prototype.isValid = function() {
+Polygon.prototype.isValid = function(minAllowedRingLength = 3) {
   if (this.coordinates.length === 0) return false;
-  return this.coordinates.every(ring => ring.length > 2);
+  return this.coordinates.every(ring => ring.length > minAllowedRingLength - 1);
 };
 
 // Expects valid geoJSON polygon geometry: first and last positions must be equivalent.
@@ -33,13 +33,13 @@ Polygon.prototype.addCoordinate = function(path, lng, lat) {
   ring.splice(ids[1], 0, [lng, lat]);
 };
 
-Polygon.prototype.removeCoordinate = function(path) {
+Polygon.prototype.removeCoordinate = function(path, minAllowedRingLength = 3) {
   this.changed();
   const ids = path.split('.').map(x => parseInt(x, 10));
   const ring = this.coordinates[ids[0]];
   if (ring) {
     ring.splice(ids[1], 1);
-    if (ring.length < 3) {
+    if (ring.length < minAllowedRingLength) {
       this.coordinates.splice(ids[0], 1);
     }
   }
