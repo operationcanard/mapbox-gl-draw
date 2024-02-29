@@ -185,6 +185,16 @@ export default function(ctx, api) {
     return api;
   };
 
+  api.removeLastVertex = function() {
+    ctx.events.removeLastVertex();
+    return api;
+  };
+
+  api.reAddRemovedVertex = function() {
+    ctx.events.reAddRemovedVertex();
+    return api;
+  };
+
   api.setFeatureProperty = function(featureId, property, value) {
     ctx.store.setFeatureProperty(featureId, property, value);
     return api;
