@@ -28,6 +28,7 @@ DrawPolygon.onSetup = function() {
 
   return {
     polygon,
+    removedCoords: [],
     currentVertexPosition: 0
   };
 };
@@ -44,6 +45,30 @@ DrawPolygon.clickAnywhere = function(state, e) {
 
 DrawPolygon.clickOnVertex = function(state) {
   return this.changeMode(Constants.modes.SIMPLE_SELECT, { featureIds: [state.polygon.id] });
+};
+
+DrawPolygon.removeLastVertex = function(state) {
+  const toDeleteCoordsValue = state.polygon.getCoordinate(`0.${state.currentVertexPosition - 1}`);
+  state.polygon.removeCoordinate(`0.${state.currentVertexPosition - 1}`, 2);
+  state.currentVertexPosition = state.currentVertexPosition - 1;
+  state.removedCoords.push(toDeleteCoordsValue);
+
+  if (!state.polygon.isValid(2)) {
+    this.deleteFeature([state.polygon.id], { silent: true });
+    this.changeMode(Constants.modes.SIMPLE_SELECT, {}, { silent: true });
+  }
+};
+
+DrawPolygon.reAddRemovedVertex = function(state) {
+  const lastRemovedCoords = state.removedCoords.pop();
+
+  if (!lastRemovedCoords) return;
+
+  const currentMousePosition = state.polygon.getCoordinate(`0.${state.currentVertexPosition}`);
+
+  state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, ...lastRemovedCoords);
+  state.currentVertexPosition = state.currentVertexPosition + 1;
+  state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, ...currentMousePosition);
 };
 
 DrawPolygon.onMouseMove = function(state, e) {
