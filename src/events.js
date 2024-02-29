@@ -267,6 +267,12 @@ export default function(ctx) {
     uncombineFeatures() {
       currentMode.uncombineFeatures();
     },
+    removeLastVertex() {
+      currentMode.removeLastVertex();
+    },
+    reAddRemovedVertex() {
+      currentMode.reAddRemovedVertex();
+    },
     getMode() {
       return currentModeName;
     }

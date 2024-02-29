@@ -65,6 +65,16 @@ export default function(modeObject) {
       },
       render(geojson, push) {
         mode.toDisplayFeatures(state, geojson, push);
+      },
+      removeLastVertex() {
+        if (mode.removeLastVertex) {
+          mode.removeLastVertex(state);
+        }
+      },
+      reAddRemovedVertex() {
+        if (mode.reAddRemovedVertex) {
+          mode.reAddRemovedVertex(state);
+        }
       }
     };
   };

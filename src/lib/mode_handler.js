@@ -74,6 +74,16 @@ const ModeHandler = function(mode, DrawContext) {
         mode.uncombineFeatures();
       }
     },
+    removeLastVertex() {
+      if (mode.removeLastVertex) {
+        mode.removeLastVertex();
+      }
+    },
+    reAddRemovedVertex() {
+      if (mode.reAddRemovedVertex) {
+        mode.reAddRemovedVertex();
+      }
+    },
     drag(event) {
       delegate('drag', event);
     },
