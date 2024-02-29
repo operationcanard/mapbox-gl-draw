@@ -3,6 +3,7 @@ import xtend from 'xtend';
 import MapboxDraw from '../index';
 import mouseClick from './utils/mouse_click';
 import touchTap from './utils/touch_tap';
+import mouseMove from "./utils/mouse_move";
 import createMap from './utils/create_map';
 import makeMouseEvent from './utils/make_mouse_event';
 import makeTouchEvent from './utils/make_touch_event';
@@ -306,6 +307,53 @@ test('draw_line_string mouse interaction', (t) => {
 
       mouseClick(map, makeMouseEvent(1, 1));
       st.equal(Draw.getAll().features.length, 0, 'no longer drawing');
+
+      st.end();
+    });
+
+    t.test('start a line but remove and readd last drawn vertices', (st) => {
+      // Start a new line
+      Draw.deleteAll();
+      Draw.changeMode('draw_line_string');
+      mouseClick(map, makeMouseEvent(1, 1));
+      mouseClick(map, makeMouseEvent(2, 2));
+      mouseClick(map, makeMouseEvent(3, 3));
+      mouseMove(map, makeMouseEvent(4, 4));
+
+      const line = Draw.getAll().features[0];
+      st.deepEqual(line.geometry.coordinates, [[1, 1], [2, 2], [3, 3], [4, 4]]);
+
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+
+      const line2 = Draw.getAll().features[0];
+      st.deepEqual(line2.geometry.coordinates, [[1, 1], [4, 4]]);
+
+      Draw.reAddRemovedVertex();
+
+      const line3 = Draw.getAll().features[0];
+      st.deepEqual(line3.geometry.coordinates, [[1, 1], [2, 2], [4, 4]]);
+
+      st.end();
+    });
+
+    t.test('start a line but remove all drawn vertices', (st) => {
+      // Start a new line
+      Draw.deleteAll();
+      Draw.changeMode('draw_line_string');
+      mouseClick(map, makeMouseEvent(1, 1));
+      mouseClick(map, makeMouseEvent(2, 2));
+      mouseClick(map, makeMouseEvent(3, 3));
+      mouseMove(map, makeMouseEvent(4, 4));
+
+      const line = Draw.getAll().features[0];
+      st.deepEqual(line.geometry.coordinates, [[1, 1], [2, 2], [3, 3], [4, 4]]);
+
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+
+      st.equal(Draw.getAll().features.length, 0, 'no feature added');
 
       st.end();
     });

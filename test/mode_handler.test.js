@@ -24,7 +24,7 @@ test('returned API', (t) => {
   t.equal(typeof mh.tap, 'function', 'exposes tap');
   t.equal(typeof mh.combineFeatures, 'function', 'exposes combineFeatures');
   t.equal(typeof mh.uncombineFeatures, 'function', 'exposes uncombineFeatures');
-  t.equal(Object.keys(mh).length, 17, 'no unexpected properties');
+  t.equal(Object.keys(mh).length, 19, 'no unexpected properties');
   t.end();
 });
 
