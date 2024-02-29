@@ -66,7 +66,8 @@ DrawLineString.onSetup = function(opts) {
   return {
     line,
     currentVertexPosition,
-    direction
+    direction,
+    removedCoords: [],
   };
 };
 
@@ -87,6 +88,30 @@ DrawLineString.clickAnywhere = function(state, e) {
 
 DrawLineString.clickOnVertex = function(state) {
   return this.changeMode(Constants.modes.SIMPLE_SELECT, { featureIds: [state.line.id] });
+};
+
+DrawLineString.removeLastVertex = function(state) {
+  const toDeleteCoordsValue = state.line.getCoordinate(state.currentVertexPosition - 1);
+  state.line.removeCoordinate(state.currentVertexPosition - 1);
+  state.currentVertexPosition = state.currentVertexPosition - 1;
+  state.removedCoords.push(toDeleteCoordsValue);
+
+  if (!state.line.isValid()) {
+    this.deleteFeature([state.line.id], { silent: true });
+    this.changeMode(Constants.modes.SIMPLE_SELECT, {}, { silent: true });
+  }
+};
+
+DrawLineString.reAddRemovedVertex = function(state) {
+  const lastRemovedCoords = state.removedCoords.pop();
+
+  if (!lastRemovedCoords) return;
+
+  const currentMousePosition = state.line.getCoordinate(state.currentVertexPosition);
+
+  state.line.updateCoordinate(state.currentVertexPosition, ...lastRemovedCoords);
+  state.currentVertexPosition = state.currentVertexPosition + 1;
+  state.line.updateCoordinate(state.currentVertexPosition, ...currentMousePosition);
 };
 
 DrawLineString.onMouseMove = function(state, e) {
