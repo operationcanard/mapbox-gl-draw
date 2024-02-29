@@ -3,6 +3,7 @@ import xtend from 'xtend';
 import MapboxDraw from '../index';
 import createMap from './utils/create_map';
 import mouseClick from './utils/mouse_click';
+import mouseMove from './utils/mouse_move';
 import touchTap from './utils/touch_tap';
 import makeMouseEvent from './utils/make_mouse_event';
 import makeTouchEvent from './utils/make_touch_event';
@@ -703,6 +704,51 @@ test('draw_polygon touch interaction', (t) => {
 
       touchTap(map, makeTouchEvent(1, 1));
       st.equal(Draw.getAll().features.length, 0, 'no longer drawing');
+
+      st.end();
+    });
+
+    t.test('start a polygon but remove and readd last drawn vertices', (st) => {
+      // Start a new polygon
+      Draw.deleteAll();
+      Draw.changeMode('draw_polygon');
+      touchTap(map, makeTouchEvent(100, 100));
+      touchTap(map, makeTouchEvent(200, 200));
+      touchTap(map, makeTouchEvent(300, 300));
+      mouseMove(map, makeMouseEvent(400, 400));
+
+      const polygon = Draw.getAll().features[0];
+      st.deepEqual(polygon.geometry.coordinates, [[[100, 100], [200, 200], [300, 300], [400, 400], [100, 100]]]);
+
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+      const polygon2 = Draw.getAll().features[0];
+      // We only keep the first point and the current mouse position
+      st.deepEqual(polygon2.geometry.coordinates, [[[100, 100], [400, 400], [100, 100]]]);
+
+      Draw.reAddRemovedVertex();
+      const polygon3 = Draw.getAll().features[0];
+      st.deepEqual(polygon3.geometry.coordinates, [[[100, 100], [200, 200], [400, 400], [100, 100]]]);
+
+      st.end();
+    });
+
+    t.test('start a polygon but remove all drawn vertices', (st) => {
+      // Start a new polygon
+      Draw.deleteAll();
+      Draw.changeMode('draw_polygon');
+      touchTap(map, makeTouchEvent(100, 100));
+      touchTap(map, makeTouchEvent(200, 200));
+      touchTap(map, makeTouchEvent(300, 300));
+      mouseMove(map, makeMouseEvent(400, 400));
+
+      const polygon = Draw.getAll().features[0];
+      st.deepEqual(polygon.geometry.coordinates, [[[100, 100], [200, 200], [300, 300], [400, 400], [100, 100]]]);
+
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+      Draw.removeLastVertex();
+      st.equal(Draw.getAll().features.length, 0, 'no feature added');
 
       st.end();
     });
