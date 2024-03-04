@@ -350,7 +350,11 @@ SimpleSelect.onCombineFeatures = function () {
   if (featuresCombined.length > 1) {
     const multiFeature = this.newFeature({
       type: Constants.geojsonTypes.FEATURE,
-      properties: featuresCombined[0].properties,
+      properties: {
+        ...featuresCombined[0].properties,
+        originUncombineFeatureId: undefined,
+        originCombineFeatureId: featuresCombined[0].id
+      },
       geometry: {
         type: `Multi${featureType}`,
         coordinates
@@ -363,7 +367,13 @@ SimpleSelect.onCombineFeatures = function () {
 
     this.map.fire(Constants.events.COMBINE_FEATURES, {
       createdFeatures: [multiFeature.toGeoJSON()],
-      deletedFeatures: featuresCombined
+      deletedFeatures: featuresCombined.map(f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          originUncombineFeatureId: multiFeature.id
+        }
+      }))
     });
   }
   this.fireActionable();
@@ -388,10 +398,13 @@ SimpleSelect.onUncombineFeatures = function () {
       feature.getFeatures().forEach((subFeature) => {
         this.addFeature(subFeature);
         subFeature.properties = feature.properties;
+        subFeature.properties.originCombineFeatureId = undefined;
+        subFeature.properties.originUncombineFeatureId = feature.id;
         createdFeatures.push(subFeature.toGeoJSON());
         this.select([subFeature.id]);
       });
       this.deleteFeature(feature.id, { silent: true });
+      feature.properties.originCombineFeatureId = feature.getFeatures()[0].id;
       featuresUncombined.push(feature.toGeoJSON());
     }
   }
