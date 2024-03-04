@@ -322,11 +322,16 @@ SimpleSelect.onCombineFeatures = function () {
 
   if (selectedFeatures.length === 0 || selectedFeatures.length < 2) return;
 
-  const coordinates = [], featuresCombined = [];
-  const featureType = selectedFeatures[0].type.replace('Multi', '');
+  // The sorting of the selection depends on the order of individual selection
+  // The way we draw the selection rectangle will have an impact on the selection array sorting
+  const selectedIds = selectedFeatures.map(({id}) => id);
+  const sortedSelectedFeatures = this._ctx.store.getAll().filter(({id}) => selectedIds.includes(id));
 
-  for (let i = 0; i < selectedFeatures.length; i++) {
-    const feature = selectedFeatures[i];
+  const coordinates = [], featuresCombined = [];
+  const featureType = sortedSelectedFeatures[0].type.replace('Multi', '');
+
+  for (let i = 0; i < sortedSelectedFeatures.length; i++) {
+    const feature = sortedSelectedFeatures[i];
 
     if (feature.type.replace('Multi', '') !== featureType) {
       return;
@@ -368,11 +373,16 @@ SimpleSelect.onUncombineFeatures = function () {
   const selectedFeatures = this.getSelected();
   if (selectedFeatures.length === 0) return;
 
+  // The sorting of the selection depends on the order of individual selection
+  // The way we draw the selection rectangle will have an impact on the selection array sorting
+  const selectedIds = selectedFeatures.map(({id}) => id);
+  const sortedSelectedFeatures = this._ctx.store.getAll().filter(({id}) => selectedIds.includes(id));
+
   const createdFeatures = [];
   const featuresUncombined = [];
 
-  for (let i = 0; i < selectedFeatures.length; i++) {
-    const feature = selectedFeatures[i];
+  for (let i = 0; i < sortedSelectedFeatures.length; i++) {
+    const feature = sortedSelectedFeatures[i];
 
     if (this.isInstanceOf('MultiFeature', feature)) {
       feature.getFeatures().forEach((subFeature) => {
