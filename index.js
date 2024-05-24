@@ -3,6 +3,7 @@ import setupOptions from './src/options';
 import setupAPI from './src/api';
 import theme from './src/lib/theme';
 import * as Constants from './src/constants';
+import * as lib from './src/lib';
 
 const setupDraw = function(options, api) {
   options = setupOptions(options);
@@ -30,6 +31,8 @@ function MapboxDraw(options) {
 
 import modes from './src/modes/index';
 MapboxDraw.modes = modes;
+MapboxDraw.constants = Constants;
+MapboxDraw.lib = lib;
 MapboxDraw.theme = theme;
 
 export default MapboxDraw;

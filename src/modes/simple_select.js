@@ -104,6 +104,21 @@ SimpleSelect.onStop = function () {
   doubleClickZoom.enable(this);
 };
 
+SimpleSelect.onMouseMove = function(state, e) {
+  const isFeature = CommonSelectors.isFeature(e);
+  if (isFeature && state.dragMoving) this.fireUpdate(state);
+
+  // On mousemove that is not a drag, stop extended interactions.
+  // This is useful if you drag off the canvas, release the button,
+  // then move the mouse back over the canvas --- we don't allow the
+  // interaction to continue then, but we do let it continue if you held
+  // the mouse button that whole time
+  this.stopExtendedInteractions(state);
+
+  // Skip render
+  return true;
+};
+
 SimpleSelect.onMouseOut = function (state) {
   // As soon as you mouse leaves the canvas, update the feature
   if (state.dragMoving) return this.fireUpdate(state);
