@@ -3,6 +3,9 @@ import setupOptions from './src/options';
 import setupAPI from './src/api';
 import theme from './src/lib/theme';
 import * as Constants from './src/constants';
+import * as CommonSelectors from "./src/lib/common_selectors";
+import isEventAtCoordinates from "./src/lib/is_event_at_coordinates";
+import doubleClickZoom from "./src/lib/double_click_zoom";
 
 const setupDraw = function(options, api) {
   options = setupOptions(options);
@@ -31,5 +34,9 @@ function MapboxDraw(options) {
 import modes from './src/modes/index';
 MapboxDraw.modes = modes;
 MapboxDraw.theme = theme;
+MapboxDraw.constants = Constants;
+MapboxDraw.libs = { commonSelectors: CommonSelectors, isEventAtCoordinates, doubleClickZoom };
+
+
 
 export default MapboxDraw;
